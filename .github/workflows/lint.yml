@@ -6,13 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Lint Markdown
-        uses: github/super-linter@v4
-        env:
-          DEFAULT_BRANCH: main
-          VALIDATE_HTML: false
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Check Links
-        uses: gaurav-nelson/github-action-markdown-link-check@v1
+      - uses: xt0rted/markdownlint-problem-matcher@v1
+      - run: markdownlint **/*.markdown --ignore node_modules
 
 
