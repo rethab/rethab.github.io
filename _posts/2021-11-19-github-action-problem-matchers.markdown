@@ -19,6 +19,7 @@ I'm talking about [Problem Matchers](https://github.com/actions/toolkit/blob/mai
 A Problem Matcher is a small piece of configuration that tells GitHub Actions what lines of your logs correspond to what lines of your code.
 
 Imagine a tool that creates error messages like the following:
+
 ```bash
 > json-validator myconfig.json
 WARN: myconfig.json:1:9: Missing attribute 'age'
@@ -26,6 +27,7 @@ ERROR: myconfig.json:1:4: Unexpected token '}'
 ```
 
 These logs contain all information necessary in order to create annotations as shown above:
+
 - each line starts with the severity of the message
 - it then specifies the filename and location where the problem occurred
 - and the last part of the line is the actual problem
@@ -65,6 +67,7 @@ The following is an example Problem Matcher for the `json-validator`.
 
 I have given it a name, `json-validtor` and defined the regular expression in the `regexp` field.
 This regex says:
+
 - log lines start with `ERROR`, `WARN` or `INFO`
 - after a colon and a space , there is a filename
 - after another colon, there is a line number
