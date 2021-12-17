@@ -4,10 +4,15 @@ description: >-
   My blog on programming.
 baseurl: ""
 domain: "fusectore.dev"
-url: "https://fusectore.dev" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://fusectore.dev"
 github_username: rethab
 
 permalink: /:year/:month/:day/:title:output_ext
+
+exclude:
+  - "*.iml"
+  - ".idea"
+  - ".github"
 
 theme: minima
 plugins:
