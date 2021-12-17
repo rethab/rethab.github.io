@@ -9,7 +9,6 @@ In Java, you can encrypt a string using the cryptic `RSA/ECB/PKCS1Padding` algor
 If you try to do the same thing in Node.js, you'll soon realize that this is not possible.
 Not because the equivalent does not exist in Node.js, but because the "algorithm" `RSA/ECB/PKCS1Padding` does not really exist and the identifier in Java is misleading.
 
-
 ## What is the problem?
 
 Let's take a look at the following code in Java:
