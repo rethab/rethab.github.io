@@ -25,7 +25,7 @@ This helps me free my mind and focus on something more important -- or nothing a
 
 ## Stick With One Tool
 
-Are you reading [Product Hunt](https://www.producthunt.com/)? [Hacker News](https://news.ycombinator.com/)? 
+Are you reading [Product Hunt](https://www.producthunt.com/)? [Hacker News](https://news.ycombinator.com/)?
 There's a new tool for keeping tasks almost every day.
 
 While trying them might be very tempting, I am convinced this is actually counter-productive.
@@ -107,12 +107,13 @@ If you type a `#` into the field, a dropdown shows up with all projects.
 I use this to quickly categorize a task.
 
 So imagine someone sends me an interesting link via Slack and I don't want to read it right away:
+
 - Open the "Quick Add" on my Mac with the shortcut described above
 - Paste the link (Todoist automatically pulls in the title of the page)
 - Type a `#` and find the respective project by typing the first few letters of "Articles"
 - Enter 🤓
 
-## Make Packing Lists Using Templates 
+## Make Packing Lists Using Templates
 
 I used to return to my home country on a regular basis when I was living abroad.
 Here's my problem: I'm always terrified that I'm going to forget something (and it often happened).
