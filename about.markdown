@@ -9,7 +9,7 @@ permalink: /about/
 Hi! This is my personal blog where I write about things I come across.
 Probably mostly programming-ish things.
 
-I am a freelance software engineer based in Amsterdam, the Netherlands.
+I am a freelance software engineer based in Zurich, Switzerland.
 If you think what you see here is helpful, and your organisation could use some of it as well, please don't hesitate to get in touch.
 
 I typically do contracting work, consulting, and training in the area of backend web development.
