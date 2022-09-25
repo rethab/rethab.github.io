@@ -14,7 +14,7 @@ I have collected some of these things, both for other people to let them know, a
 How well do you know actions?
 Can you answer all of these questions correctly?
 
-_Assume that all YAML and code is valid/compiles_
+ℹ️ Assume that all YAML and code is valid/compiles
 
 ## Output from a previous job
 
@@ -127,10 +127,12 @@ on:
 ```
 
 When talking about running actions from contributors, it is important to mention that:
-- You can control how actions are triggered in pull requests from forks by [Approving workflow runs from public forks](https://docs.github.com/en/actions/managing-workflow-runs/approving-workflow-runs-from-public-forks)
-- Secrets are generally not available in PRs from forks, except for `$GITHUB_TOKEN`, which is read-only. There's a trigger called `pull_request_target` to work around that, but you need to be [careful](https://securitylab.github.com/research/github-actions-preventing-pwn-requests/) as this open up the gates for potential vulnerabilities.
 
-## Too much information, GitHub!
+- You can control how actions are triggered in pull requests from forks by [Approving workflow runs from public forks](https://docs.github.com/en/actions/managing-workflow-runs/approving-workflow-runs-from-public-forks)
+- Secrets are generally not available in PRs from forks, except for `$GITHUB_TOKEN`, which is read-only.
+  There's a trigger called `pull_request_target` to work around that, but you need to be [careful](https://securitylab.github.com/research/github-actions-preventing-pwn-requests/) as this open up the gates for potential vulnerabilities.
+
+## Too much information, GitHub
 
 Say I have an open pull request based on a branch called `my-feature`, and the following workflow is triggered.
 What does it print?
