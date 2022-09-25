@@ -25,7 +25,7 @@ jobs:
   jobOne:
     runs-on: ubuntu-latest
     outputs:
-      foo: ${{ steps.foo.outputs.foo }}
+      foo: {% raw %} ${{ steps.foo.outputs.foo }} {% endraw %}
     steps:
       - run: echo '::set-output name=foo::bar'
         id: foo
@@ -40,7 +40,7 @@ jobs:
     needs: jobTwo
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{ needs.jobOne.outputs.foo }}
+      - run: echo {% raw %} ${{ needs.jobOne.outputs.foo }} {% endraw %}
 ```
 
 Solution:
@@ -178,7 +178,7 @@ jobs:
   branch:
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{ github.event.pull_request.head.ref }}
+      - run: echo {% raw %} ${{ github.event.pull_request.head.ref }} {% endraw %}
 ```
 
 ## Bonus: Am I there or not?
@@ -200,7 +200,7 @@ jobs:
     steps:
       - uses: my/action@v1
         with:
-          my-input: ${{ inputs.my-input }}
+          my-input: {% raw %} ${{ inputs.my-input }} {% endraw %} 
 ```
 
 Let's say the action `my/action@v1` has an optional input `my-input` which has a default value `my-value`.
@@ -225,7 +225,7 @@ steps:
   - uses: my/action@v1
     if: inputs.my-input
     with:
-        my-input: ${{ inputs.my-input }}
+        my-input: {% raw %} ${{ inputs.my-input }} {% endraw %}
   - uses: my/action@v1
     if: inputs.my-input == ''
 ```
