@@ -144,7 +144,7 @@ jobs:
   branch:
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{ github.ref_name }}
+      - run: echo {% raw %} ${{ github.ref_name }} {% endraw %}
 ```
 
 I'll even give you the docs on [`github.ref_name`](https://docs.github.com/en/actions/learn-github-actions/contexts#github-context):
