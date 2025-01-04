@@ -1,20 +1,31 @@
 ---
 layout: post
-title:  "AT Protocol Identity: PLC"
+title:  "Identities in the AT Protocol"
 date:   2025-01-04
 categories: [atproto,bluesky,did,plc]
 ---
 
 The AT Protocol is an open, decentralized network for building social applications.
 
-The new-ish social network Bluesky is an application built on top of the AT Protocol.
-In this blog post, we're going to explore the identities in the AT Protocol, starting from Bluesky user handles.
+Bluesky, a relatively new social network, is built on top of the AT Protocol.
+It recently piqued my interest as I came across this fascinating research paper [Bluesky and the AT Protocol: Usable Decentralized Social Media](https://arxiv.org/abs/2402.03239).
+
+In this post, we’ll dive into one of the key elements of the AT Protocol: **identities**.
+We will start with Bluesky user handles, explore additional information about them, and see what else we can discover.
 
 ### DID Resolution
 
-A handle in Bluesky points to a DID by DNS or HTTPS.
+A handle in Bluesky is associated with a DID, which can be resolved using DNS or HTTPS.
 
-The DID of `@jay.bsky.team` can be resolved via DNS.
+> **decentralized identifier (DID)**
+> 
+> A globally unique persistent identifier that does not require a centralized registration authority and is often generated and/or registered cryptographically. \[...]
+> Many—but not all—DID methods make use of distributed ledger technology (DLT) or some other form of decentralized network.
+> 
+> _From [Decentralized Identifiers (DIDs) v1.0](https://www.w3.org/TR/did-core/#dfn-decentralized-identifiers)_
+
+
+The DID for `@jay.bsky.team` can be resolved via a DNS record.
 Example with `dig`:
 
 ```bash
@@ -23,9 +34,9 @@ Example with `dig`:
 _atproto.jay.bsky.team. 14400 IN TXT "did=did:plc:oky5czdrnfjpqslsw2a5iclo"
 ```
 
-If you don't have `dig` installed, you can use an online tool like [nslookup.io](https://www.nslookup.io/domains/_atproto.jay.bsky.team/dns-records/txt/)
+If you don't have `dig` installed, try an online tool like [nslookup.io](https://www.nslookup.io/domains/_atproto.jay.bsky.team/dns-records/txt/).
 
-If there is no DNS TXT entry, the handle might point to a DID via a well-known HTTPS endpoint.
+If no DNS TXT entry exists, the handle may resolve to a DID through a well-known HTTPS endpoint.
 Let's take the example of `@jamesgunn.sky.social`:
 
 ```bash
@@ -33,16 +44,18 @@ Let's take the example of `@jamesgunn.sky.social`:
 did:plc:lotavzt36yanhfy3j3gpysyj
 ```
 
-If you don't have `curl` installed, you can also just open the link in your browser [https://jamesgunn.bsky.social/.well-known/atproto-did](https://jamesgunn.bsky.social/.well-known/atproto-did).
+If you don't have `curl` installed, you can just open the link in your browser [https://jamesgunn.bsky.social/.well-known/atproto-did](https://jamesgunn.bsky.social/.well-known/atproto-did).
 
 ### PLC
 
-Once you have a DID, take a look at the second part after the colon.
-That is called the method.
+Once you have a DID, examine the part after the second colon.
+This is known as the method.
 The above two examples use `plc`, which stands for Public Ledger of Credentials.
 These PLC DIDs can be looked up in the PLC directory at [plc.directory](https://plc.directory).
 
-We can again use `curl` to get more information about a DID.
+_The AT Protocol also supports the `web` method, though we focus on `plc` here._
+
+We can use `curl` again to get more information about a DID.
 Let's take `@jay.bsky.team`'s DID as example.
 
 ```bash
@@ -123,17 +136,17 @@ Let's take `@jay.bsky.team`'s DID as example.
 ]
 ```
 
-Again, feel free to click on it instead [https://plc.directory/did:plc:oky5czdrnfjpqslsw2a5iclo/log](https://plc.directory/did:plc:oky5czdrnfjpqslsw2a5iclo/log).
+Again, feel free to click on it instead, [https://plc.directory/did:plc:oky5czdrnfjpqslsw2a5iclo/log](https://plc.directory/did:plc:oky5czdrnfjpqslsw2a5iclo/log).
 
-This returns a list of all operations that have been performed on this DID.
-The first entry is the genesis operation -- the one that created the DID.
+This returns a list of all operations that were performed on this DID.
+The first entry is the genesis operation — the one that created the DID.
 It is the only one where `prev` (previous entry) is `null`, because it is the first one.
 
-Note that the first entry of this DID has a different format.
-This is the legacy format.
-DIDs that are created these days use the new format (subsequent records), but `@jay.bsky.team` has been around for a while (she's the CEO of Bluesky).
+Note that the first entry of this DID's log has a different format.
+This entry uses the legacy format.
+Currently, newly created DIDs use the new format (subsequent records), but `@jay.bsky.team` has been around for a while (the account belongs to Bluesky's CEO).
 
-If you look through the logs you'll notice a couple of changes that were made to her identity over time:
+If you look through the logs you will notice a couple of changes that were made to her identity over time:
 
 - the handle was changed from `jay.bsky.social` to `jay.bsky.team` (note that the legacy format used `handle` whereas the new format uses `alsoKnownAs`)
   - the handle now includes `at://`
@@ -142,15 +155,15 @@ If you look through the logs you'll notice a couple of changes that were made to
 ### Signatures
 
 Each entry in the log includes a `sig` field, which contains the signature.
-This is a cryptographic signature created from the other fields in a particular entry.
-For the genesis operation, the `rotationKeys` (or `signingKey` for legacy) field contains the public key(s) of the key pair(s), with which the entry was signed.
+This cryptographic signature is derived from the other fields in the entry.
+For the genesis operation, the `rotationKeys` (or `signingKey` for legacy) field contains the public key(s) of the key pair(s) with which the entry was signed.
 
 Subsequent operations need to be signed with the key from the previous entry.
-Furthermore, the `prev` field links back to the previous entry.
+Additionally, the `prev` field references the previous entry.
 
 ### Creating a DID
 
-The identifier in the DID, which is the last part of the colon-separated is constructed from the genesis operation.
+The identifier in the DID, which is the last part of the colon-separated string, is constructed from the genesis operation.
 For `@jay.bsky.team`:
 
 - the identifier is `oky5czdrnfjpqslsw2a5iclo`
@@ -170,29 +183,29 @@ For `@jay.bsky.team`:
 
 Steps:
 
-- Encode the genesis operation in DAG-CBOR (this is a concise binary format and looks a bit like JSON)
-- Create a SHA256 hash of the encoded document
-- Encode the hash with base 32 and make it lowercase
-- Take the first 24 characters
-- Prepend `did:plc:` and you'll have your 32 - character DID
+- encode the genesis operation in DAG-CBOR (this is a concise binary format and looks a bit like JSON)
+- create a SHA256 hash of the encoded document
+- encode the hash with base 32 and make its letters lowercase.
+- take the first 24 characters
+- add did:plc: as a prefix to create the 32-character DID
 
 ### Verification
 
 Based on what we've learned so far we can verify a handle from Bluesky.
-Say we want to check `@jay.bsky.team`:
+For example, if we want to check `@jay.bsky.team`:
 
 - resolve DID via DNS: `did:plc:oky5czdrnfjpqslsw2a5iclo`
-- lookup DID in PLC directory
-- the handle in the `alsoKnownAs` (or `handle` for legacy) field needs to be the same as `jay.bsky.team`
+- look up DID in PLC directory
+- the handle in the `alsoKnownAs` (or `handle` for legacy) field must match `jay.bsky.team`
 - verify all operations using the public keys and signatures
 - reconstruct the DID from the genesis operation and ensure it is the same as the one we found in the DNS TXT record
 
 Can we trust the PLC directory though?
 Say a malicious actor has taken over control and modified all entries in the log.
-The hacker even constructed the entries in the log in a way that all the signatures check out.
-How would we know the PLC directory was compromised?
+The hacker even constructed the entries in the log so that all the signatures appear valid.
+How would we know the PLC directory is compromised?
 Remember that the DID can be reconstructed from the genesis operation.
-If that was modified, we'd end up with a different DID than the one we found in the DNS TXT record.
+If that were modified, we'd end up with a different DID from the one we found in the DNS TXT record.
 
 ## Links & Further Reading
 
