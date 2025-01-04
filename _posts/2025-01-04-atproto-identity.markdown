@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Identities in the AT Protocol"
+title:  "Exploring Identities in the AT Protocol via Bluesky"
 date:   2025-01-04
 categories: [atproto,bluesky,did,plc]
 ---
