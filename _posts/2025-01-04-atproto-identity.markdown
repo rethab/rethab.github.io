@@ -203,9 +203,26 @@ For example, if we want to check `@jay.bsky.team`:
 Can we trust the PLC directory though?
 Say a malicious actor has taken over control and modified all entries in the log.
 The hacker even constructed the entries in the log so that all the signatures appear valid.
-How would we know the PLC directory is compromised?
+How would we still know the PLC directory is compromised?
 Remember that the DID can be reconstructed from the genesis operation.
 If that were modified, we'd end up with a different DID from the one we found in the DNS TXT record.
+
+### Summary
+
+This blog explores the AT Protocol, the decentralized foundation of social applications like Bluesky, with a focus on user identities and their technical underpinnings.
+It explains how Bluesky user handles are associated with Decentralized Identifiers (DIDs), which can be resolved using DNS records or HTTPS endpoints.
+Detailed examples demonstrate how tools like dig and curl retrieve DID data, revealing the method (plc) and structure used to catalog them in the Public Ledger of Credentials (PLC).
+The post also examines the DID lifecycle, showcasing how historical operations and changes—such as updates to handles or servers—are logged and accessible for transparency.
+
+There are several aspects that we did not investigate, such as:
+
+- the `web` method for DIDs
+- tombstone operations in the log
+- recovery
+- how exactly to construct the `prev` entry in the DID document
+- what the other fields in the DID document mean
+
+If you are curious, the links in the next section will help you answer these questions.
 
 ## Links & Further Reading
 
