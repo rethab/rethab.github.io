@@ -20,7 +20,7 @@ Example with `dig`:
 ```bash
 > dig _atproto.jay.bsky.team TXT
 [...]
-_atproto.jay.bsky.team.	14400	IN	TXT	"did=did:plc:oky5czdrnfjpqslsw2a5iclo"
+_atproto.jay.bsky.team. 14400 IN TXT "did=did:plc:oky5czdrnfjpqslsw2a5iclo"
 ```
 
 If you don't have `dig` installed, you can use an online tool like [nslookup.io](https://www.nslookup.io/domains/_atproto.jay.bsky.team/dns-records/txt/)
@@ -134,6 +134,7 @@ This is the legacy format.
 DIDs that are created these days use the new format (subsequent records), but `@jay.bsky.team` has been around for a while (she's the CEO of Bluesky).
 
 If you look through the logs you'll notice a couple of changes that were made to her identity over time:
+
 - the handle was changed from `jay.bsky.social` to `jay.bsky.team` (note that the legacy format used `handle` whereas the new format uses `alsoKnownAs`)
   - the handle now includes `at://`
 - the personal data server changed from `https://bsky.social` to `https://morel.us-east.host.bsky.network`
@@ -151,6 +152,7 @@ Furthermore, the `prev` field links back to the previous entry.
 
 The identifier in the DID, which is the last part of the colon-separated is constructed from the genesis operation.
 For `@jay.bsky.team`:
+
 - the identifier is `oky5czdrnfjpqslsw2a5iclo`
 - the genesis operation is this JSON document:
 
@@ -167,6 +169,7 @@ For `@jay.bsky.team`:
 ```
 
 Steps:
+
 - Encode the genesis operation in DAG-CBOR (this is a concise binary format and looks a bit like JSON)
 - Create a SHA256 hash of the encoded document
 - Encode the hash with base 32 and make it lowercase
@@ -177,6 +180,7 @@ Steps:
 
 Based on what we've learned so far we can verify a handle from Bluesky.
 Say we want to check `@jay.bsky.team`:
+
 - resolve DID via DNS: `did:plc:oky5czdrnfjpqslsw2a5iclo`
 - lookup DID in PLC directory
 - the handle in the `alsoKnownAs` (or `handle` for legacy) field needs to be the same as `jay.bsky.team`
@@ -200,4 +204,3 @@ If that was modified, we'd end up with a different DID than the one we found in 
 - [Decentralized Identifiers (DIDs) v1.0](https://www.w3.org/TR/did-core)
 - [`did:plc` Method Specification](https://web.plc.directory/spec/v0.1/did-plc)
 - [Specification: DAG-CBOR](https://ipld.io/specs/codecs/dag-cbor/spec/)
-
