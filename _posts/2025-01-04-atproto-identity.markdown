@@ -48,7 +48,7 @@ If you don't have `curl` installed, you can just open the link in your browser [
 
 ### PLC
 
-Once you have a DID, examine the part after the second colon.
+Once you have a DID, examine the part after the first colon.
 This is known as the method.
 The above two examples use `plc`, which stands for Public Ledger of Credentials.
 These PLC DIDs can be looked up in the PLC directory at [plc.directory](https://plc.directory).
