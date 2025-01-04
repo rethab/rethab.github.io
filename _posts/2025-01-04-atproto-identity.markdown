@@ -37,7 +37,7 @@ _atproto.jay.bsky.team. 14400 IN TXT "did=did:plc:oky5czdrnfjpqslsw2a5iclo"
 If you don't have `dig` installed, try an online tool like [nslookup.io](https://www.nslookup.io/domains/_atproto.jay.bsky.team/dns-records/txt/).
 
 If no DNS TXT entry exists, the handle may resolve to a DID through a well-known HTTPS endpoint.
-Let's take the example of `@jamesgunn.sky.social`:
+Let's take the example of `@jamesgunn.bsky.social`:
 
 ```bash
 > curl https://jamesgunn.bsky.social/.well-known/atproto-did
