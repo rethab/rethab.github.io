@@ -1,0 +1,15 @@
+{
+  "name": "mosaic",
+  "private": true,
+  "scripts": {
+    "test": "node --test \"test/**/*.test.js\"",
+    "test:browser": "node --test \"e2e/*.test.mjs\"",
+    "bench": "node bench/ga-bench.js",
+    "bench:browser": "node bench/browser-bench.mjs",
+    "golden": "node scripts/generate-golden.js",
+    "build:wasm": "node scripts/build-wasm.js"
+  },
+  "devDependencies": {
+    "wabt": "^1.0.39"
+  }
+}

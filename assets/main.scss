@@ -1,0 +1,32 @@
+---
+---
+
+@import "minima";
+
+$app-accent: #3a6ff7;
+
+.site-nav .app-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  vertical-align: middle;
+  padding: 3px 12px;
+  border: 1px solid rgba($app-accent, 0.45);
+  border-radius: 999px;
+  color: $app-accent;
+  font-weight: 500;
+
+  &:hover {
+    text-decoration: none;
+    background-color: rgba($app-accent, 0.08);
+    border-color: $app-accent;
+  }
+
+  @include media-query($on-palm) {
+    display: flex;
+    justify-content: flex-end;
+    border: none;
+    border-radius: 0;
+    padding: 5px 10px;
+  }
+}

@@ -14,7 +14,19 @@ exclude:
   - ".idea"
   - ".github"
   - "vendor"
+  - "Gemfile"
+  - "Gemfile.lock"
+  - "mosaic/node_modules"
+  - "mosaic/test"
+  - "mosaic/e2e"
+  - "mosaic/bench"
+  - "mosaic/scripts"
+  - "mosaic/wasm"
+  - "mosaic/package.json"
+  - "mosaic/package-lock.json"
+  - "mosaic/photo43.png"
 
 theme: minima
 plugins:
   - jekyll-feed
+  - jekyll-sitemap
