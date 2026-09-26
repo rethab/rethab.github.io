@@ -5,6 +5,6 @@ jobs:
     name: "Markdown linting"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: xt0rted/markdownlint-problem-matcher@v1
+      - uses: actions/checkout@v7
+      - uses: xt0rted/markdownlint-problem-matcher@v3
       - run: npx markdownlint-cli **/*.markdown
