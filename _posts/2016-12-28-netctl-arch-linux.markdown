@@ -15,7 +15,7 @@ You may get a list of interfaces with the command
 $> ip link
 ```
 
-### Is your profile loaded?
+## Is your profile loaded?
 
 After I copied and adapted one of the profiles from `/etc/netctl/examples` and tried to switch to it, I got the following error message:
 
@@ -39,7 +39,7 @@ If the profile was successfully loaded, you should see the output
 
 ```Dec 28 13:24:28 asus-rethab netctl-auto[3204]: Included profile 'wlp2s0-33C3'```
 
-### Issues with the profile?
+## Issues with the profile?
 
 The ESSID of the network I was trying to connect to was `33C3`.
 For some reason, I forgot to put this into quotes in the netctl profile so it would simply not be activated and keep falling back to some other default profile.

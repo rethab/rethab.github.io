@@ -13,17 +13,16 @@ It recently piqued my interest as I came across this fascinating research paper 
 In this post, we’ll dive into one of the key elements of the AT Protocol: **identities**.
 We will start with Bluesky user handles, explore additional information about them, and see what else we can discover.
 
-### DID Resolution
+## DID Resolution
 
 A handle in Bluesky is associated with a DID, which can be resolved using DNS or HTTPS.
 
 > **decentralized identifier (DID)**
-> 
+>
 > A globally unique persistent identifier that does not require a centralized registration authority and is often generated and/or registered cryptographically. \[...]
 > Many—but not all—DID methods make use of distributed ledger technology (DLT) or some other form of decentralized network.
-> 
+>
 > _From [Decentralized Identifiers (DIDs) v1.0](https://www.w3.org/TR/did-core/#dfn-decentralized-identifiers)_
-
 
 The DID for `@jay.bsky.team` can be resolved via a DNS record.
 Example with `dig`:
@@ -46,7 +45,7 @@ did:plc:lotavzt36yanhfy3j3gpysyj
 
 If you don't have `curl` installed, you can just open the link in your browser [https://jamesgunn.bsky.social/.well-known/atproto-did](https://jamesgunn.bsky.social/.well-known/atproto-did).
 
-### PLC
+## PLC
 
 Once you have a DID, examine the part after the first colon.
 This is known as the method.
@@ -152,7 +151,7 @@ If you look through the logs you will notice a couple of changes that were made 
   - the handle now includes `at://`
 - the personal data server changed from `https://bsky.social` to `https://morel.us-east.host.bsky.network`
 
-### Signatures
+## Signatures
 
 Each entry in the log includes a `sig` field, which contains the signature.
 This cryptographic signature is derived from the other fields in the entry.
@@ -161,7 +160,7 @@ For the genesis operation, the `rotationKeys` (or `signingKey` for legacy) field
 Subsequent operations need to be signed with the key from the previous entry.
 Additionally, the `prev` field references the previous entry.
 
-### Creating a DID
+## Creating a DID
 
 The identifier in the DID, which is the last part of the colon-separated string, is constructed from the genesis operation.
 For `@jay.bsky.team`:
@@ -189,7 +188,7 @@ Steps:
 - take the first 24 characters
 - add did:plc: as a prefix to create the 32-character DID
 
-### Verification
+## Verification
 
 Based on what we've learned so far we can verify a handle from Bluesky.
 For example, if we want to check `@jay.bsky.team`:
@@ -207,7 +206,7 @@ How would we still know the PLC directory is compromised?
 Remember that the DID can be reconstructed from the genesis operation.
 If that were modified, we'd end up with a different DID from the one we found in the DNS TXT record.
 
-### Summary
+## Summary
 
 This blog explores the AT Protocol, the decentralized foundation of social applications like Bluesky, with a focus on user identities and their technical underpinnings.
 It explains how Bluesky user handles are associated with Decentralized Identifiers (DIDs), which can be resolved using DNS records or HTTPS endpoints.
