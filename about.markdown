@@ -4,7 +4,7 @@ title: About
 permalink: /about/
 ---
 
-![Me trying Yoga](/assets/images/yoga-oaff.jpeg){: style="float: left; width: 20%; padding: 2em"}
+![Avatar of me](/assets/images/github-avatar.png){: style="float: left; width: 20%; padding: 2em"}
 
 Hi! This is my personal blog where I write about things I come across.
 Probably mostly programming-ish things.
