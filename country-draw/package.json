@@ -1,0 +1,20 @@
+{
+  "name": "country-draw",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/build-cities.mjs --if-missing && vite",
+    "build": "node scripts/build-cities.mjs && node -e \"fs.rmSync('assets', { recursive: true, force: true })\" && vite build",
+    "preview": "vite preview",
+    "test": "node scripts/build-cities.mjs --if-missing && node --test \"test/**/*.test.js\"",
+    "cities": "node scripts/build-cities.mjs"
+  },
+  "dependencies": {
+    "d3-geo": "^3.1.1",
+    "topojson-client": "^3.1.0",
+    "world-atlas": "^2.0.2"
+  },
+  "devDependencies": {
+    "vite": "^8.3.1"
+  }
+}

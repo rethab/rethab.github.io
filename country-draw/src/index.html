@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Country Draw: Draw Countries and Find Cities From Memory</title>
+    <meta name="description" content="Draw a country's border from memory and see how close you got, or find its cities on a blank map. Runs entirely in your browser." />
+    <link rel="canonical" href="https://fusectore.dev/country-draw/" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 16'%3E%3Cpath d='M6 0a6 6 0 0 0-6 6c0 4.5 6 10 6 10s6-5.5 6-10a6 6 0 0 0-6-6z' fill='%23e5484d'/%3E%3Ccircle cx='6' cy='6' r='2.2' fill='%23fff'/%3E%3C/svg%3E" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="fusectore.dev" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="https://fusectore.dev/country-draw/" />
+    <meta property="og:title" content="Country Draw: Draw Countries and Find Cities From Memory" />
+    <meta property="og:description" content="Draw a country's border from memory and see how close you got, or find its cities on a blank map. Runs entirely in your browser." />
+    <meta name="twitter:card" content="summary" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Country Draw",
+        "url": "https://fusectore.dev/country-draw/",
+        "description": "Draw a country's border from memory and see how close you got, or find its cities on a blank map. Runs entirely in your browser.",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript",
+        "isAccessibleForFree": true,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "fusectore.dev", "url": "https://fusectore.dev/" }
+      }
+    </script>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f6f5f1;
+        --panel: #ffffff;
+        --ink: #1d1d1f;
+        --muted: #6b6b70;
+        --line: #d9d7d0;
+        --accent: #2f6fde;
+        --reference: #d2452f;
+        --sea: #dde8ef;
+        --land: #ebe7de;
+        --land-border: #ffffff;
+        --target: #ffffff;
+        --target-border: #8c887e;
+        --segment: #e8e6df;
+        --halo: #ffffff;
+        --accent-text: #ffffff;
+      }
+      /* The canvas reads these tokens too, so the map and drawings follow the theme. */
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #16171a;
+          --panel: #212226;
+          --ink: #eaeaec;
+          --muted: #9a9aa2;
+          --line: #34353a;
+          --accent: #5c8dff;
+          --reference: #ff6b5e;
+          --sea: #1c2731;
+          --land: #2b2c30;
+          --land-border: #16171a;
+          --target: #45474e;
+          --target-border: #9a9aa2;
+          --segment: #2b2c31;
+          --halo: #16171a;
+          --accent-text: #0b0b0d;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font: 16px/1.4 system-ui, -apple-system, 'Segoe UI', sans-serif;
+      }
+      main {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 24px 16px;
+      }
+      .home-link {
+        display: inline-block;
+        margin-bottom: 8px;
+        color: var(--muted);
+        font-size: 0.9rem;
+        text-decoration: none;
+      }
+      .home-link:hover {
+        color: var(--ink);
+      }
+      .top {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px 24px;
+        margin-bottom: 16px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 1.6rem;
+      }
+      .modes {
+        display: inline-flex;
+        padding: 4px;
+        gap: 4px;
+        border-radius: 12px;
+        background: var(--segment);
+      }
+      .modes button {
+        border: 0;
+        border-radius: 8px;
+        background: transparent;
+        color: var(--muted);
+        font-weight: 600;
+      }
+      .modes button[aria-selected='true'] {
+        background: var(--panel);
+        color: var(--ink);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+      }
+      .prompt {
+        margin: 0;
+        font-size: 1.5rem;
+        line-height: 1.25;
+      }
+      .hint {
+        margin: 4px 0 16px;
+        min-height: 1.4em;
+        color: var(--muted);
+      }
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+      .controls .spacer {
+        flex: 1;
+      }
+      select,
+      button {
+        font: inherit;
+        padding: 8px 14px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        color: var(--ink);
+        cursor: pointer;
+        min-height: 44px;
+        touch-action: manipulation;
+      }
+      select {
+        appearance: none;
+        -webkit-appearance: none;
+        padding-right: 36px;
+        background: var(--panel) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%236b6b70' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 14px center;
+      }
+      button:disabled {
+        opacity: 0.4;
+        cursor: default;
+      }
+      button.primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: var(--accent-text);
+        font-weight: 600;
+      }
+      canvas {
+        display: block;
+        /* Fit within the viewport height too, so the whole canvas is reachable on a landscape tablet. */
+        width: min(100%, (100dvh - 350px) * 4 / 3);
+        min-width: 280px;
+        margin: 0 auto;
+        aspect-ratio: 4 / 3;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        touch-action: none;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-touch-callout: none;
+        cursor: crosshair;
+      }
+      canvas.done {
+        cursor: default;
+      }
+      .result {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px 24px;
+        margin-top: 16px;
+        min-height: 64px;
+      }
+      .score {
+        font-size: 3rem;
+        font-weight: 700;
+        line-height: 1;
+      }
+      .score small {
+        font-size: 1.2rem;
+        color: var(--muted);
+        font-weight: 500;
+      }
+      .legend {
+        display: flex;
+        gap: 16px;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      .legend span::before {
+        content: '';
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        margin-right: 6px;
+        border-radius: 3px;
+        vertical-align: -1px;
+        background: var(--swatch);
+      }
+      [hidden] {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a class="home-link" href="/">&larr; fusectore.dev</a>
+      <header class="top">
+        <h1>Country Draw</h1>
+        <div class="modes" role="tablist" aria-label="Game mode">
+          <button type="button" role="tab" data-mode="draw" aria-selected="true">Draw the country</button>
+          <button type="button" role="tab" data-mode="find" aria-selected="false">Find the city</button>
+        </div>
+      </header>
+
+      <p class="prompt" id="prompt">Loading…</p>
+      <p class="hint" id="hint"></p>
+
+      <div class="controls">
+        <select id="country" aria-label="Country"></select>
+        <button id="random" type="button">Random</button>
+        <span class="spacer"></span>
+        <button id="undo" type="button">Undo</button>
+        <button id="clear" type="button">Clear</button>
+        <button id="done" type="button" class="primary">Done</button>
+        <button id="again" type="button" class="primary" hidden>Try again</button>
+      </div>
+
+      <canvas id="canvas"></canvas>
+
+      <div class="result" id="result" hidden>
+        <div class="score" id="score"></div>
+        <div>
+          <div id="verdict"></div>
+          <div class="legend">
+            <span id="legend-mine" style="--swatch: var(--accent)">Your drawing</span>
+            <span id="legend-real" style="--swatch: var(--reference)">Actual shape</span>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script type="module" src="./country-draw.js"></script>
+  </body>
+</html>

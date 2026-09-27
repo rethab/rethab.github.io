@@ -1,0 +1,5 @@
+node_modules/
+src/cities.js
+# Build output, served by Jekyll
+/index.html
+/assets/

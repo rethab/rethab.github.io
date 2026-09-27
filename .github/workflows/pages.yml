@@ -31,12 +31,21 @@ jobs:
         with:
           node-version: 24
           cache: npm
-          cache-dependency-path: mosaic/package-lock.json
+          cache-dependency-path: |
+            mosaic/package-lock.json
+            country-draw/package-lock.json
       - name: Build and test mosaic
         working-directory: mosaic
         run: |
           npm ci
           npm run build:wasm
+          npm test
+      # The build fetches the npm packages and city data, so the published page loads nothing external.
+      - name: Build and test country-draw
+        working-directory: country-draw
+        run: |
+          npm ci
+          npm run build
           npm test
       - name: Build with Jekyll
         run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
