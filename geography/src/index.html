@@ -3,23 +3,23 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Country Draw: Draw Countries and Find Cities From Memory</title>
+    <title>Geography: Draw Countries and Find Cities From Memory</title>
     <meta name="description" content="Draw a country's border from memory and see how close you got, or find its cities on a blank map. Runs entirely in your browser." />
-    <link rel="canonical" href="https://fusectore.dev/country-draw/" />
+    <link rel="canonical" href="https://fusectore.dev/geography/" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 16'%3E%3Cpath d='M6 0a6 6 0 0 0-6 6c0 4.5 6 10 6 10s6-5.5 6-10a6 6 0 0 0-6-6z' fill='%23e5484d'/%3E%3Ccircle cx='6' cy='6' r='2.2' fill='%23fff'/%3E%3C/svg%3E" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="fusectore.dev" />
     <meta property="og:locale" content="en_US" />
-    <meta property="og:url" content="https://fusectore.dev/country-draw/" />
-    <meta property="og:title" content="Country Draw: Draw Countries and Find Cities From Memory" />
+    <meta property="og:url" content="https://fusectore.dev/geography/" />
+    <meta property="og:title" content="Geography: Draw Countries and Find Cities From Memory" />
     <meta property="og:description" content="Draw a country's border from memory and see how close you got, or find its cities on a blank map. Runs entirely in your browser." />
     <meta name="twitter:card" content="summary" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "WebApplication",
-        "name": "Country Draw",
-        "url": "https://fusectore.dev/country-draw/",
+        "name": "Geography",
+        "url": "https://fusectore.dev/geography/",
         "description": "Draw a country's border from memory and see how close you got, or find its cities on a blank map. Runs entirely in your browser.",
         "applicationCategory": "GameApplication",
         "operatingSystem": "Any",
@@ -123,13 +123,25 @@
         color: var(--ink);
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
       }
+      /* The question and the result share one slot, so finishing a round doesn't shift the canvas. */
+      .status {
+        display: grid;
+        margin-bottom: 16px;
+      }
+      .status > * {
+        grid-area: 1 / 1;
+      }
+      .status.finished .ask,
+      .status:not(.finished) .result {
+        visibility: hidden;
+      }
       .prompt {
         margin: 0;
         font-size: 1.5rem;
         line-height: 1.25;
       }
       .hint {
-        margin: 4px 0 16px;
+        margin: 4px 0 0;
         min-height: 1.4em;
         color: var(--muted);
       }
@@ -174,7 +186,7 @@
       canvas {
         display: block;
         /* Fit within the viewport height too, so the whole canvas is reachable on a landscape tablet. */
-        width: min(100%, (100dvh - 350px) * 4 / 3);
+        width: min(100%, (100dvh - 290px) * 4 / 3);
         min-width: 280px;
         margin: 0 auto;
         aspect-ratio: 4 / 3;
@@ -187,7 +199,8 @@
         -webkit-touch-callout: none;
         cursor: crosshair;
       }
-      canvas.done {
+      canvas.done,
+      canvas.outside {
         cursor: default;
       }
       .result {
@@ -195,8 +208,6 @@
         flex-wrap: wrap;
         align-items: center;
         gap: 8px 24px;
-        margin-top: 16px;
-        min-height: 64px;
       }
       .score {
         font-size: 3rem;
@@ -233,15 +244,29 @@
     <main>
       <a class="home-link" href="/">&larr; fusectore.dev</a>
       <header class="top">
-        <h1>Country Draw</h1>
+        <h1 id="title">Country Draw</h1>
         <div class="modes" role="tablist" aria-label="Game mode">
           <button type="button" role="tab" data-mode="draw" aria-selected="true">Draw the country</button>
           <button type="button" role="tab" data-mode="find" aria-selected="false">Find the city</button>
         </div>
       </header>
 
-      <p class="prompt" id="prompt">Loading…</p>
-      <p class="hint" id="hint"></p>
+      <div class="status" id="status">
+        <div class="ask">
+          <p class="prompt" id="prompt">Loading…</p>
+          <p class="hint" id="hint"></p>
+        </div>
+        <div class="result" aria-live="polite">
+          <div class="score" id="score"></div>
+          <div>
+            <div id="verdict"></div>
+            <div class="legend">
+              <span id="legend-mine" style="--swatch: var(--accent)">Your drawing</span>
+              <span id="legend-real" style="--swatch: var(--reference)">Actual shape</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div class="controls">
         <select id="country" aria-label="Country"></select>
@@ -254,18 +279,7 @@
       </div>
 
       <canvas id="canvas"></canvas>
-
-      <div class="result" id="result" hidden>
-        <div class="score" id="score"></div>
-        <div>
-          <div id="verdict"></div>
-          <div class="legend">
-            <span id="legend-mine" style="--swatch: var(--accent)">Your drawing</span>
-            <span id="legend-real" style="--swatch: var(--reference)">Actual shape</span>
-          </div>
-        </div>
-      </div>
     </main>
-    <script type="module" src="./country-draw.js"></script>
+    <script type="module" src="./geography.js"></script>
   </body>
 </html>

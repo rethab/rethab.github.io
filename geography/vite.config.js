@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 
-// Sources live in src/ and the build lands in this directory itself, so Jekyll serves it at /country-draw/.
+// Sources live in src/ and the build lands in this directory itself, so Jekyll serves it at /geography/.
 export default defineConfig({
   root: 'src',
   base: './',

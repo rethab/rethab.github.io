@@ -17,6 +17,9 @@ const WIDTH = 800;
 const HEIGHT = 600;
 const MIN_POINTS = 10;
 const MAP_PADDING = 36;
+// Some coastal cities sit just off the simplified coastline, so guesses may land slightly outside it.
+const BORDER_TOLERANCE = 8;
+const TITLES = { draw: 'Country Draw', find: 'City Finder' };
 
 const $ = (id) => document.getElementById(id);
 const canvas = $('canvas');
@@ -25,6 +28,8 @@ const select = $('country');
 const css = getComputedStyle(document.documentElement);
 const color = (name) => css.getPropertyValue(name).trim();
 const dpr = window.devicePixelRatio || 1;
+const hit = document.createElement('canvas').getContext('2d');
+hit.lineWidth = 2 * BORDER_TOLERANCE;
 
 let mode = location.hash === '#find' ? 'find' : 'draw';
 let finished = false;
@@ -51,6 +56,8 @@ function currentCountry() {
 function setMode(next) {
   mode = next;
   history.replaceState(null, '', mode === 'find' ? '#find' : location.pathname);
+  $('title').textContent = TITLES[mode];
+  document.title = `${TITLES[mode]} · Geography`;
   for (const tab of document.querySelectorAll('[data-mode]')) {
     tab.setAttribute('aria-selected', String(tab.dataset.mode === mode));
   }
@@ -65,8 +72,8 @@ function startRound() {
   finished = false;
   strokes = [];
   pin = null;
-  canvas.classList.remove('done');
-  $('result').hidden = true;
+  canvas.classList.remove('done', 'outside');
+  $('status').classList.remove('finished');
   $('again').hidden = true;
   // Find mode commits the guess on release, so it has no Done button.
   $('done').hidden = mode === 'find';
@@ -78,7 +85,7 @@ function startRound() {
   } else {
     city = nextCity(select.value);
     setPrompt('Where is ', city.name, '?');
-    $('hint').textContent = 'Tap where you think it is. Hold and drag to fine-tune before letting go.';
+    $('hint').textContent = `Tap where you think it is in ${currentCountry().label}. Hold and drag to fine-tune before letting go.`;
   }
   render();
 }
@@ -126,20 +133,32 @@ function toCanvas(e) {
 // Only one pointer is tracked at a time, so a resting palm or second finger on a tablet is ignored.
 let activePointer = null;
 
+function onCountry(p) {
+  const { shape } = mapFor(select.value);
+  return hit.isPointInPath(shape, ...p, 'evenodd') || hit.isPointInStroke(shape, ...p);
+}
+
 canvas.addEventListener('pointerdown', (e) => {
   if (finished || activePointer !== null) return;
   e.preventDefault();
+  const p = toCanvas(e);
+  if (mode === 'find' && !onCountry(p)) return;
   canvas.setPointerCapture(e.pointerId);
   activePointer = e.pointerId;
-  if (mode === 'draw') strokes.push([toCanvas(e)]);
-  else pin = toCanvas(e);
+  if (mode === 'draw') strokes.push([p]);
+  else pin = p;
   render();
 });
 
 canvas.addEventListener('pointermove', (e) => {
+  if (mode === 'find' && !finished && activePointer === null && e.pointerType === 'mouse') {
+    canvas.classList.toggle('outside', !onCountry(toCanvas(e)));
+  }
   if (e.pointerId !== activePointer) return;
   if (mode === 'find') {
-    pin = toCanvas(e);
+    // Dragging past the border leaves the pin at the last spot inside the country.
+    const p = toCanvas(e);
+    if (onCountry(p)) pin = p;
   } else {
     const stroke = strokes[strokes.length - 1];
     // Coalesced events keep fast finger strokes smooth instead of turning them into polygons.
@@ -209,10 +228,12 @@ function finish() {
   else finishGuess();
   finished = true;
   canvas.classList.add('done');
-  $('result').hidden = false;
+  $('status').classList.add('finished');
   $('done').hidden = true;
   $('again').hidden = false;
   updateButtons();
+  // On a phone the page may be scrolled down to the canvas, which would hide the score.
+  if ($('status').getBoundingClientRect().top < 0) $('status').scrollIntoView({ behavior: 'smooth' });
 }
 
 function showScore(score, text) {
@@ -304,15 +325,15 @@ function mapFor(name) {
   g.lineWidth = 1;
   g.stroke();
 
-  g.beginPath();
-  draw(countryFeature(world, name));
+  const shape = new Path2D();
+  geoPath(projection, shape)(countryFeature(world, name));
   g.fillStyle = color('--target');
-  g.fill('evenodd');
+  g.fill(shape, 'evenodd');
   g.strokeStyle = color('--target-border');
   g.lineWidth = 1.5;
-  g.stroke();
+  g.stroke(shape);
 
-  const map = { region, projection, image };
+  const map = { region, projection, image, shape };
   maps.set(name, map);
   return map;
 }

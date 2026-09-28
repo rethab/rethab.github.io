@@ -25,13 +25,13 @@ exclude:
   - "mosaic/package.json"
   - "mosaic/package-lock.json"
   - "mosaic/photo43.png"
-  - "country-draw/node_modules"
-  - "country-draw/src"
-  - "country-draw/scripts"
-  - "country-draw/test"
-  - "country-draw/package.json"
-  - "country-draw/package-lock.json"
-  - "country-draw/vite.config.js"
+  - "geography/node_modules"
+  - "geography/src"
+  - "geography/scripts"
+  - "geography/test"
+  - "geography/package.json"
+  - "geography/package-lock.json"
+  - "geography/vite.config.js"
 
 theme: minima
 plugins:

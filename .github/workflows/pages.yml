@@ -33,7 +33,7 @@ jobs:
           cache: npm
           cache-dependency-path: |
             mosaic/package-lock.json
-            country-draw/package-lock.json
+            geography/package-lock.json
       - name: Build and test mosaic
         working-directory: mosaic
         run: |
@@ -41,8 +41,8 @@ jobs:
           npm run build:wasm
           npm test
       # The build fetches the npm packages and city data, so the published page loads nothing external.
-      - name: Build and test country-draw
-        working-directory: country-draw
+      - name: Build and test geography
+        working-directory: geography
         run: |
           npm ci
           npm run build
